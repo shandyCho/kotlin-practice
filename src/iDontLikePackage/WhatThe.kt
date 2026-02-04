@@ -1,7 +1,5 @@
 package com.example.iDontLikePackage
 
-import sun.security.krb5.internal.crypto.Nonce.value
-
 // 매개변수에 기본 값을 설정하여 해당 매개변수에 값이 할당되지 않았을 때, 기본적으로 할당될 값을 지정해줄 수 있음
 fun whatThe (message: String, count:Int, defalutValuee: String = "default") :String {
     // 매개변수명을 호출할 때 사용할 수 있음
@@ -30,3 +28,4 @@ fun toSecond (time: String): (Int) -> Int = when (time) {
     "second" -> {value -> value}
     else -> {value -> value}
 }
+
