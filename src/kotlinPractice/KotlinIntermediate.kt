@@ -1,9 +1,24 @@
 package com.example.kotlinPractice
 
+import com.example.iDontLikePackage.AbstractClass1
 import com.example.iDontLikePackage.Canvas
+import com.example.iDontLikePackage.CreatedObject
+import com.example.iDontLikePackage.CreatedObject2
+import com.example.iDontLikePackage.CreatedObject3
+import com.example.iDontLikePackage.DataOject
+import com.example.iDontLikePackage.DataOject2
+import com.example.iDontLikePackage.DelegatedClass1
+import com.example.iDontLikePackage.DelegatedClass1_1
+import com.example.iDontLikePackage.DelegatedClass2
+import com.example.iDontLikePackage.DelegatedClass3
+import com.example.iDontLikePackage.DoubleInheritedClassFromInterface
 import com.example.iDontLikePackage.IDontLikePackageSystem
+import com.example.iDontLikePackage.InheritedClass1
+import com.example.iDontLikePackage.InheritedClass2
+import com.example.iDontLikePackage.InheritedClassFromInterface
 import com.example.iDontLikePackage.Menu
 import com.example.iDontLikePackage.ThisIsMultipleClassInSameFile
+import com.example.iDontLikePackage.WithCompanionObject
 import com.example.iDontLikePackage.WithTestClass
 import com.example.iDontLikePackage.extension
 import com.example.iDontLikePackage.extension2
@@ -311,5 +326,208 @@ fun intermediate() {
         리시버를 가진 람다 표현식은 Kotlin의 타입 안전 빌더와 결합하여
         런타임이 아닌 컴파일 시점에 타입 문제를 감지하는 DSL을 작성할 수 있음
      */
+
+
+    // 클래스 상속
+    /*
+        기본적으로 Kotlin 클래스는 상속될 수 없음
+        의도치 않은 상속을 방지하고 클래스 유지관리의 용이함을 위하여 이렇게 설계함
+        코틀린 클래스는 단일 상속만 지원함 -> 자바랑 똑같음
+        모든 클래스는 Any 라는 클래스의 하위 클래스임
+        Any 클래스는 toString() 함수를 멤버 함수로 자동으로 제공함
+        상속받은 클래스를 다시 상속받는 방식으로 클래스의 계층화를 이룰 수 있음
+     */
+    // 추상 클래스
+    /*
+        클래스간의 일부 코드를 공유하기 위해 상속을 사용하려는 경우 (클래스 구성 코드의 중복 방지) 추상 클래스 사용을 고려
+        추상 클래스는 기본적으로 상속될 수 있음
+        추상 클래스의 목적이 다른 클래스가 상속하거나 구현할 멤버를 제공하는 것이기 때문임
+        따라서 생성자를 가질 수 있으나 이를 통해 인스턴스를 생성할 수는 없음
+        자식 클래스 내에서 override 키워드 사용해서 부모 클래스의 속성과 동작을 재정의 할 수 있음
+        추상 클래스는 구현이 있는 함수와 속성 뿐만 아니라 구현이 없는 함수와 속성(추상함수와 추상 속성으로 알려져있음?) 을 모두 포함할 수 있음
+        구현이 없는 함수와 속성을 선언하기 위해서는 abstract 키워드를 사용할 수 있음
+        단일 상속만 지원하기 때문에 여러 소스에서의 상속이 필요한 경우 Interface를 사용해야함
+     */
+//    val abstClass = AbstractClass1(param1 = "I", param2 = "N")
+    // Cannot create an instance of an abstract class.
+
+    val inheritedInstance1 = InheritedClass1(param1 = "I", param2 = "N", param3 = "H")
+    println("inheritedInstance1.member2: ${inheritedInstance1.member2}")
+    inheritedInstance1.action1()
+    inheritedInstance1.action2()
+    /*
+        inheritedInstance1.member2: 1
+        action1
+        Inherited Class's Action2
+     */
+
+    val inheritedInstance2 = InheritedClass2(param1 = "E", param2 = "R", param3 = "I")
+    println("inheritedInstance2.member2: ${inheritedInstance2.member2}")
+    inheritedInstance2.action1()
+    inheritedInstance2.action2()
+    inheritedInstance2.inheritedClassFunction()
+    /*
+        inheritedInstance2.member2: 30
+        action1
+        Inherited Class's Action1313113 | param3: I
+        Inherited Class's InheritedClassFunction
+     */
+
+
+    /*
+        Interface
+        인터페이스는 클래스와 유사하나 몇가지 차이점이 존재함
+        1. 인터페이스의 인스턴스를 생성할 수 없음 -> 생성자나 헤더가 존재하지 않음
+        2. 인터페이스에 정의된 함수와 속성은 암시적으로 상속 가능함 (open 키워드가 암묵적으로 붙어있음)
+        3. 함수의 구현을 제공하지 않는 경우에도 함수를 abstract 키워드를 붙여서 선언할 필요가 없음
+        클래스가 인터페이스를 나중에 상속 받고 해당 클래스 안에서 구현할 수 있는 함수와 속성의 집합을 정의함
+        이는 구체적인 구현 세부 사항보다는 인터페이스가 설명하는 추상화에 집중할 수 있게 됨
+        인터페이스 사용 시 코드가 얻는 이점은 다음과 같음
+        1. 모듈화 정도가 강해져서 서로 다른 부분을 분리하므로 각 부분이 독립적으로 발전할 수 있음
+        2. 관련 기능을 응집력 있는 세트로 묶어 이해하기 쉬움
+        3. 테스트를 위해 구현체를 모의 객체로 빠르게 교체할 수 있어 테스트가 용이함
+        인터페이스는 다중 상속을 지원하므로, 클래스가 한 번에 여러 인터페이스를 구현할 수 있음
+        인터페이스의 상속은 추상 클래스의 상속과 비슷하나, () 를 사용하지 않음 -> 생성자가 없기 때문임
+        인터페이스에 함수 구현 가능함
+     */
+
+    val inheritedCalssFromInterface1 = InheritedClassFromInterface(p1 = 30, p2 = "It is Parameter ValuE")
+    val inheritedCalssFromInterface2 = InheritedClassFromInterface(p1 = -540, p2 = "iT IS pRAMETER vALUe")
+
+    val callResult1 = inheritedCalssFromInterface1.mfun2(berg = "Ham", berg2 = 433)
+    val callResult2 = inheritedCalssFromInterface2.mfun2(berg = "Guten", berg2 = 1211)
+    // mem1: 30 | mem2: iT IS pARAMETER vALUe
+    // mem1: 540 | mem2: It is Prameter ValuE
+
+    println("callResult1: $callResult1, callResult2: $callResult2")
+    // callResult1: Hamburg 433, callResult2: Gutenburg 1211
+    val paramMutableList = mutableListOf<String>("String", "lowercase", "UPPERCASE", "inverse", "Average", "Leverage", )
+    val doubleInherited = DoubleInheritedClassFromInterface(p1 = 30, p2 = "It is Parameter ValuE", p3 = "It will be reverse", p4 = paramMutableList)
+    doubleInherited.mfun1()
+    val createBergResult = doubleInherited.mfun2(berg = "Regens", berg2 = 433)
+    doubleInherited.mfun3()
+    val cre4teListResult = doubleInherited.mfun4()
+//    mem1: 30
+//    mem2: iT IS pARAMETER vALUe
+//    mem3: esrever eb lliw tI
+//    mem4: [lowercase, inverse]
+//    mem1: 30 | mem2: iT IS pARAMETER vALUe
+//    호출 가능함?
+
+    println("createBergResult : $createBergResult, \ncre4teListResult : $cre4teListResult")
+//    createBergResult : Regensburg 433,
+//    cre4teListResult : [lowercase, inverse]
+
+
+
+
+
+
+    // Delegation (위임)
+    /*
+        인터페이스는 유용하나, 함수가 너무 많을 경우 하위 클래스에 반복되는 코드가 많이 생길 수 있음
+        클래스 동작의 일부만 재정의 하고 싶을 때에도 반복 작업이 많이 필요해짐
+     */
+    val d1 = DelegatedClass1()
+    val d2 = DelegatedClass1_1()
+    val d3 = DelegatedClass2(d1)
+    val d4 = DelegatedClass2(d2)
+    val d5 = DelegatedClass3(d1)
+    val d6 = DelegatedClass3(d2)
+    d3.f1()
+//    v1: SSSSSSSSSSSSSSSSSSS
+    d3.f2()
+//    delegatedClass2
+    d4.f1()
+//    v1 1_!_!_!_!_!_!_!___!_!_!__!_!_!_!_!__!_!_: RRRRRRRRRRRRRRR
+    d4.f2()
+//    delegatedClass2_1
+    d5.f1()
+//    IT IS DELEGATED
+    d5.f2()
+//    delegatedClass2
+    d6.f1()
+//    IT IS DELEGATED
+    d6.f2()
+//    delegatedClass2_1
+
+
+    // 객체 선언
+    /*
+        객체 선언을 사용하여 단일 인스턴스를 가진 클래스를 선언할 수 있음
+        클래스 선언 + 단일 인스턴스 생성 의 역할을 함
+        객체 선언은 프로그램의 단일 참조 지점으로 사용할 클래스를 생성하거나,
+        시스템 전반의 동작을 조정할 때 유용함
+        코틀린의 모든 객체는 지연 생성 방식으로, 해당 객체에 실제로 접근할 때 생성됨
+        또한 코틀린은 모든 객체가 thread-safe 하게 생성되도록 보장하므로, 수동으로 확인할 필요가 없음 -> 진짜로?
+        객체 선언은 다음과 방식으로 할 수 있음
+             object 오브젝트명 {
+                객체 본문에는 속성이나 멤버 함수를 추가할 수 있음
+             }
+         객체는 생성자를 가질 수 없기 때문에 클래스와 같은 헤더를 가질 필요는 없음
+         객체는 클래스와 인터페이스를 상속 받을 수 있음 상속 받는 방법은 기존과 동일함
+     */
+
+    val o = CreatedObject
+    o.m1 = "와아아아아"
+    println(o.m1)
+    // 와아아아아
+    o.objectFunction("eeeee")
+    // 와 짱신기해요 eeeee 2 근데 Object라고 따로 분리를 시켜버렸네?
+
+    val o2 = CreatedObject
+    println(o2.m1)
+    // 와아아아아
+    o2.objectFunction("eeeee")
+    // 와 짱신기해요 eeeee 2 근데 Object라고 따로 분리를 시켜버렸네?
+    println("o == o2 ${o == o2}")
+    // 싱글톤 객체 (단일 인스턴스) 가 생성되기 때문에 한 번 생성하고 수정할 경우 다음 생성 시 수정 내역이 반영되어 있음
+
+    /*
+        Data Object
+        객체 선언의 내용을 더 쉽게 출력할 수 있도록 해줌
+        데이터 Object는 자동으로 toString()과 equals()를 재정의 해줌
+        데이터 Object는 싱글톤 객체이기 때문에 copy() 는 자동으로 제공되지 않음
+        선언을 위해서는 data object 오브젝트명 {} 을 사용한다
+        더 자세한 내용은 이 곳에서 확인: https://kotlinlang.org/docs/object-declarations.html#data-objects
+     */
+    val o3 = CreatedObject2
+    val o4 = CreatedObject3
+
+    val dataObject = DataOject
+    val do2 = DataOject2
+
+    println("object: ${o3.toString()}")
+    println("dataObject: ${dataObject.toString()}")
+    println("o3.equals(o4): ${o3.equals(o4)}")
+    println("dataObject.equals(do2): ${dataObject.equals(do2)}")
+    // o == o2 true
+    // object: com.example.iDontLikePackage.CreatedObject2@27bc2616
+    // dataObject: DataOject
+    // o3.equals(o4): false
+    // dataObject.equals(do2): false
+    // toString override는 눈에 확 들어오는데 equals override는 감이 잡히지 않음
+
+    /*
+        Companion Object
+        동반 객체?
+        코틀린에서 클래스는 객체 하나를 가질 수 있으며 이것이 동반 객체임
+        클래스당 단 하나의 동반 객체만 가질 수 있음
+        해당 클래스가 처음 참조될 때 생성됨
+
+        동탄 객체 내부에서 선언된 모든 속성이나 함수는 모든 클래스 인스턴스에서 공유됨
+        이 말은 즉 클래스 인스턴스는 여러개 생성해도 해당 클래스의 동반 객체는 싱클톤이기 때문에 그 메모리 주소만 들고 있기 때문?
+
+        클래스 내에서 동반 객체를 생성하기 위해서는 객체 선언과 동일한 구문을 사용하되, 앞에 companion 키워드를 붙임
+        동반 객체는 이름을 가질 필요가 없음 (익명 객체?) 이름을 정의하지 않으면 기본값은 Companion임
+        자세한 사항은 이 곳에서 확인: https://kotlinlang.org/docs/object-declarations.html#companion-objects
+     */
+
+    val wco = WithCompanionObject
+    wco.printString("Hello")
+    // String: Hello
+
+
+
 
 }
